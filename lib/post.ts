@@ -3,7 +3,7 @@ import path from 'path'
 import matter from 'gray-matter'
 
 
-type PostData = {
+export type PostData = {
   id: string,
   title: string,
   date: string

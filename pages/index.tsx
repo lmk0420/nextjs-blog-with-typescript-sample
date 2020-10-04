@@ -2,9 +2,14 @@ import React, { FC } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
+import { getSortedPostData, PostData } from '../lib/post'
 
+type Props = {
+  allPostData: PostData[]
+}
 
-const Home: FC = () => {
+const Home: FC<Props> = (props) => {
+  const { allPostData } = props
   return (
     <Layout>
       <Head>
@@ -17,8 +22,35 @@ const Home: FC = () => {
           <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
         </p>
       </section>
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostData.map(({ id, date, title}) => (
+            <li className={utilStyles.listItem} key={id}>
+              {title}
+              <br />
+              {id}
+              <br />
+              {date}
+            </li>
+          ))}
+        </ul>
+      </section>
     </Layout>
   )
+}
+
+ /**
+  * getStaticPropsはサーバサイドでのみ実行される. クライアント用のバンドルにも含まれない.
+  * また、Pageからのみexport可能.
+  */
+export async function getStaticProps(): Promise<{props: Props}> {
+  const allPostData = getSortedPostData()
+  return {
+    props: {
+      allPostData
+    }
+  }
 }
 
 export default Home
